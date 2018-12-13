@@ -100,7 +100,7 @@ class YOLOLayer(nn.Module):
             pred[..., :4] *= self.stride
             return pred.view(batchsize, -1, n_ch).data
 
-        pred = pred[..., :4].cpu().data
+        pred = pred[..., :4].data
 
         # target assignment
 
@@ -128,14 +128,14 @@ class YOLOLayer(nn.Module):
             n = int(nlabel[b])
             if n == 0:
                 continue
-            truth_box = torch.FloatTensor(np.zeros((n, 4)))
+            truth_box = dtype(np.zeros((n, 4)))
             truth_box[:n, 2] = truth_w_all[b, :n]
             truth_box[:n, 3] = truth_h_all[b, :n]
             truth_i = truth_i_all[b, :n]
             truth_j = truth_j_all[b, :n]
 
             # calculate iou between truth and reference anchors
-            anchor_ious_all = bboxes_iou(truth_box, self.ref_anchors)
+            anchor_ious_all = bboxes_iou(truth_box.cpu(), self.ref_anchors)
             best_n_all = np.argmax(anchor_ious_all, axis=1)
             best_n = best_n_all % 3
             best_n_mask = ((best_n_all == self.anch_mask[0]) | (

@@ -28,13 +28,15 @@ We have verified that COCO val results of darknet are reproduced in the conditio
 - Numpy (verified as operable: 1.15.2)
 - OpenCV
 - Matplotlib
-- Pytorch (verified as operable: v0.4.0)
+- Pytorch (verified as operable: v0.4.0, v1.0.0)
 - Cython (verified as operable: v0.29.1)
 - [pycocotools](https://pypi.org/project/pycocotools/) (verified as operable: v2.0.0) 
+- Cuda (verified as operable: v9.0)
 
 optional:
 - tensorboard (>1.7.0)
 - [tensorboardX](https://github.com/lanpa/tensorboardX)
+- CuDNN (verified as operable: v7.0)
 
 #### Docker Environment
 
