@@ -149,7 +149,7 @@ $ python train.py --cfg config/yolov3_eval.cfg --eval_interval 1 [--ckpt ckpt_pa
 - [x] Augmentation : Resizing
 - [ ] Augmentation : Random Distortion
 - [ ] Augmentation : Jitter
-- [ ] Augmentation : Flip
+- [x] Augmentation : Flip
 
 
 ## Paper

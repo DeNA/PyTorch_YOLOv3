@@ -165,7 +165,7 @@ def bboxes_iou(bboxes_a, bboxes_b, xyxy=True):
     return area_i / (area_a[:, None] + area_b - area_i)
 
 
-def label2yolobox(labels, info_img, maxsize):
+def label2yolobox(labels, info_img, maxsize, lrflip):
     """
     Transform coco labels to yolo box labels
     Args:
@@ -180,6 +180,7 @@ def label2yolobox(labels, info_img, maxsize):
             nh, nw (int): shape of the resized image without padding
             dx, dy (int): pad size
         maxsize (int): target image size after pre-processing
+        lrflip (bool): horizontal flip flag
 
     Returns:
         labels:label data whose size is :math:`(N, 5)`.
@@ -197,6 +198,8 @@ def label2yolobox(labels, info_img, maxsize):
     labels[:, 2] = (((y1 + y2) / 2) * nh + dy) / maxsize
     labels[:, 3] *= nw / w / maxsize
     labels[:, 4] *= nh / h / maxsize
+    if lrflip:
+        labels[:, 1] = 1 - labels[:, 1]
     return labels
 
 
