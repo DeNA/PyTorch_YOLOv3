@@ -72,6 +72,8 @@ To detect objects in the sample image, just run:
 ```bash
 $ python demo.py --image data/mountain.png --detect_thresh 0.5 --weights_path weights/yolov3.weights
 ```
+To run the demo using the non-interactive backend, add `--background` . 
+
 ## Train
 
 ```bash

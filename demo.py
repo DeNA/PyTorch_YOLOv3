@@ -1,7 +1,5 @@
 import argparse
-import numpy as np
 import yaml
-import matplotlib.pyplot as plt
 
 import cv2
 import torch
@@ -10,7 +8,6 @@ from torch.autograd import Variable
 from models.yolov3 import *
 from utils.utils import *
 from utils.parse_yolo_weights import parse_yolo_weights
-from utils.vis_bbox import vis_bbox
 
 
 def main():
@@ -83,12 +80,19 @@ def main():
         classes.append(cls_id)
         colors.append(coco_class_colors[int(cls_pred)])
 
-    if args.background==False:
-        vis_bbox(
-            img_raw, bboxes, label=classes, label_names=coco_class_names,
-            instance_colors=colors, linewidth=2)
-        plt.show()
-    else:
+    if args.background:
+        import matplotlib
+        matplotlib.use('Agg')
+
+    from utils.vis_bbox import vis_bbox
+    import matplotlib.pyplot as plt
+
+    vis_bbox(
+        img_raw, bboxes, label=classes, label_names=coco_class_names,
+        instance_colors=colors, linewidth=2)
+    plt.show()
+
+    if args.background:
         plt.savefig('output.png')
 
 
