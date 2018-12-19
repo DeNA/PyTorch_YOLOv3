@@ -42,6 +42,7 @@ class COCODataset(Dataset):
         self.min_size = min_size
         self.lrflip = augmentation['LRFLIP']
         self.jitter = augmentation['JITTER']
+        self.random_placing = augmentation['RANDOM_PLACING']
         self.hue = augmentation['HUE']
         self.saturation = augmentation['SATURATION']
         self.exposure = augmentation['EXPOSURE']
@@ -91,7 +92,8 @@ class COCODataset(Dataset):
             img = cv2.imread(img_file)
         assert img is not None
 
-        img, info_img = preprocess(img, self.img_size)
+        img, info_img = preprocess(img, self.img_size, jitter=self.jitter,
+                                   random_placing=self.random_placing)
 
         img = np.transpose(img / 255., (2, 0, 1))
 

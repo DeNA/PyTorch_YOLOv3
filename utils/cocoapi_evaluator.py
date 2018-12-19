@@ -28,8 +28,8 @@ class COCOAPIEvaluator():
                 IoU threshold of non-max supression ranging from 0 to 1.
         """
 
-        augmentation = {'LRFLIP': False, 'JITTER': 0, 'HUE': 0, 'SATURATION': 0,
-                        'EXPOSURE': 0, 'RANDOM_DISTORT': False}
+        augmentation = {'LRFLIP': False, 'JITTER': 0, 'RANDOM_PLACING': False,
+                        'HUE': 0, 'SATURATION': 0, 'EXPOSURE': 0, 'RANDOM_DISTORT': False}
 
         self.dataset = COCODataset(model_type=model_type,
                                    data_dir=data_dir,

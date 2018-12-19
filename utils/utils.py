@@ -235,8 +235,8 @@ def preprocess(img, imgsize, jitter, random_placing=False):
         img (numpy.ndarray): input image whose shape is :math:`(H, W, C)`.
             Values range from 0 to 255.
         imgsize (int): target image size after pre-processing
-        jitter (float): amplitude of random placing
-        random_placing (bool): if True, add jitter for placing the image
+        jitter (float): amplitude of jitter for resizing
+        random_placing (bool): if True, place the image at random position
 
     Returns:
         img (numpy.ndarray): input image whose shape is :math:`(C, imgsize, imgsize)`.
@@ -250,7 +250,8 @@ def preprocess(img, imgsize, jitter, random_placing=False):
     img = img[:, :, ::-1]
     assert img is not None
 
-    if random_placing:
+    if jitter > 0:
+        # add jitter
         dw = jitter * w
         dh = jitter * h
         new_ar = (w + np.random.uniform(low=-dw, high=dw))\
