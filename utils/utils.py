@@ -227,7 +227,7 @@ def yolobox2label(box, info_img):
     return label
 
 
-def preprocess(img, imgsize):
+def preprocess(img, imgsize, jitter, random_placing=False):
     """
     Image preprocess for yolo input
     Pad the shorter side of the image and resize to (imgsize, imgsize)
@@ -235,6 +235,8 @@ def preprocess(img, imgsize):
         img (numpy.ndarray): input image whose shape is :math:`(H, W, C)`.
             Values range from 0 to 255.
         imgsize (int): target image size after pre-processing
+        jitter (float): amplitude of random placing
+        random_placing (bool): if True, add jitter for placing the image
 
     Returns:
         img (numpy.ndarray): input image whose shape is :math:`(C, imgsize, imgsize)`.
@@ -248,7 +250,14 @@ def preprocess(img, imgsize):
     img = img[:, :, ::-1]
     assert img is not None
 
-    new_ar = w / h
+    if random_placing:
+        dw = jitter * w
+        dh = jitter * h
+        new_ar = (w + np.random.uniform(low=-dw, high=dw))\
+                 / (h + np.random.uniform(low=-dh, high=dh))
+    else:
+        new_ar = w / h
+
     if new_ar < 1:
         nh = imgsize
         nw = nh * new_ar
@@ -257,14 +266,16 @@ def preprocess(img, imgsize):
         nh = nw / new_ar
     nw, nh = int(nw), int(nh)
 
-    dx = (imgsize - nw) // 2
-    dy = (imgsize - nh) // 2
+    if random_placing:
+        dx = int(np.random.uniform(imgsize - nw))
+        dy = int(np.random.uniform(imgsize - nh))
+    else:
+        dx = (imgsize - nw) // 2
+        dy = (imgsize - nh) // 2
 
-    img = cv2.resize(img / 255., (nw, nh))
-    sized = np.ones((imgsize, imgsize, 3), dtype=np.float32) * 0.5
+    img = cv2.resize(img, (nw, nh))
+    sized = np.ones((imgsize, imgsize, 3), dtype=np.uint8) * 127
     sized[dy:dy+nh, dx:dx+nw, :] = img
-
-    img = np.transpose(sized, (2, 0, 1))
 
     info_img = (h, w, nh, nw, dx, dy)
     return img, info_img

@@ -93,6 +93,8 @@ class COCODataset(Dataset):
 
         img, info_img = preprocess(img, self.img_size)
 
+        img = np.transpose(img / 255., (2, 0, 1))
+
         if lrflip:
             img = np.flip(img, axis=2).copy()
 
