@@ -122,10 +122,17 @@ TRAIN:
   BATCHSIZE: 4 
   SUBDIVISION: 16 # num of minibatch inner-iterations
   IMGSIZE: 608 # initial image size
-  CONFWEIGHT: 1 # not used
   LOSSTYPE: l2 # loss type for w, h
   IGNORETHRE: 0.7 # IoU threshold for learning conf
+AUGMENTATION: # data augmentation section only for training
   RANDRESIZE: True # enable random resizing
+  JITTER: 0.3 # amplitude of jitter for resizing
+  RANDOM_PLACING: True # enable random placing
+  HUE: 0.1 # random distortion parameter
+  SATURATION: 1.5 # random distortion parameter
+  EXPOSURE: 1.5 # random distortion parameter
+  LRFLIP: True # enable horizontal flip
+  RANDOM_DISTORT: False # enable random distortion in HSV space
 TEST:
   CONFTHRE: 0.8 # not used
   NMSTHRE: 0.45 # same as official darknet
@@ -147,9 +154,10 @@ $ python train.py --cfg config/yolov3_eval.cfg --eval_interval 1 [--ckpt ckpt_pa
 - [x] Training Scheduler
 - [x] Weight initialization
 - [x] Augmentation : Resizing
-- [ ] Augmentation : Random Distortion
-- [ ] Augmentation : Jitter
+- [x] Augmentation : Jitter
 - [x] Augmentation : Flip
+- [ ] Augmentation : Random Distortion
+- [ ] Add the YOLOv3 Tiny Model
 
 
 ## Paper
