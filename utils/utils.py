@@ -279,7 +279,7 @@ def preprocess(img, imgsize, jitter, random_placing=False):
     sized[dy:dy+nh, dx:dx+nw, :] = img
 
     info_img = (h, w, nh, nw, dx, dy)
-    return img, info_img
+    return sized, info_img
 
 
 def get_coco_label_names():
