@@ -66,7 +66,7 @@ def main():
     batch_size = cfg['TRAIN']['BATCHSIZE']
     subdivision = cfg['TRAIN']['SUBDIVISION']
     ignore_thre = cfg['TRAIN']['IGNORETHRE']
-    random_resize = cfg['TRAIN']['RANDRESIZE']
+    random_resize = cfg['AUGMENTATION']['RANDRESIZE']
 
     print('effective_batch_size = batch_size * iter_size = %d * %d' %
           (batch_size, subdivision))
@@ -99,6 +99,7 @@ def main():
     dataset = COCODataset(model_type=cfg['MODEL']['TYPE'],
                   data_dir='COCO/',
                   img_size=imgsize,
+                  augmentation=cfg['AUGMENTATION'],
                   debug=args.debug)
 
     dataloader = torch.utils.data.DataLoader(

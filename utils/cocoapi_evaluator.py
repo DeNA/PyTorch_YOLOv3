@@ -27,9 +27,14 @@ class COCOAPIEvaluator():
             nmsthre (float):
                 IoU threshold of non-max supression ranging from 0 to 1.
         """
+
+        augmentation = {'LRFLIP': False, 'JITTER': 0, 'RANDOM_PLACING': False,
+                        'HUE': 0, 'SATURATION': 0, 'EXPOSURE': 0, 'RANDOM_DISTORT': False}
+
         self.dataset = COCODataset(model_type=model_type,
                                    data_dir=data_dir,
                                    img_size=img_size,
+                                   augmentation=augmentation,
                                    json_file='instances_val2017.json',
                                    name='val2017')
         self.dataloader = torch.utils.data.DataLoader(
