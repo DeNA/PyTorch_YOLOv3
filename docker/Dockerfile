@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 ARG UID
-RUN useradd docker -u $UID -G sudo -s /bin/bash -m
+RUN useradd docker -l -u $UID -G sudo -s /bin/bash -m
 RUN echo 'Defaults visiblepw' >> /etc/sudoers
 RUN echo 'docker ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
