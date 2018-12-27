@@ -54,11 +54,12 @@ class resblock(nn.Module):
         return x
 
 
-def create_yolov3_modules(ignore_thre):
+def create_yolov3_modules(ignore_thre, n_classes):
     """
     Build yolov3 layer modules.
     Args:
         ignore_thre (float): used in YOLOLayer.
+        n_classes (int): number of classes
     Returns:
         mlist (ModuleList): YOLOv3 module list.
     """
@@ -82,7 +83,7 @@ def create_yolov3_modules(ignore_thre):
     # 1st yolo branch
     mlist.append(add_conv(in_ch=512, out_ch=1024, ksize=3, stride=1))
     mlist.append(
-        YOLOLayer(anch_mask=[6, 7, 8], n_classes=80, stride=32, in_ch=1024,
+        YOLOLayer(anch_mask=[6, 7, 8], n_classes=n_classes, stride=32, in_ch=1024,
             ignore_thre=ignore_thre))
 
     mlist.append(add_conv(in_ch=512, out_ch=256, ksize=1, stride=1))
@@ -94,7 +95,7 @@ def create_yolov3_modules(ignore_thre):
     # 2nd yolo branch
     mlist.append(add_conv(in_ch=256, out_ch=512, ksize=3, stride=1))
     mlist.append(
-        YOLOLayer(anch_mask=[3, 4, 5], n_classes=80, stride=16, in_ch=512,
+        YOLOLayer(anch_mask=[3, 4, 5], n_classes=n_classes, stride=16, in_ch=512,
              ignore_thre=ignore_thre))
 
     mlist.append(add_conv(in_ch=256, out_ch=128, ksize=1, stride=1))
@@ -103,7 +104,7 @@ def create_yolov3_modules(ignore_thre):
     mlist.append(add_conv(in_ch=128, out_ch=256, ksize=3, stride=1))
     mlist.append(resblock(ch=256, nblocks=2, shortcut=False))
     mlist.append(
-        YOLOLayer(anch_mask=[0, 1, 2], n_classes=80, stride=8, in_ch=256,
+        YOLOLayer(anch_mask=[0, 1, 2], n_classes=n_classes, stride=8, in_ch=256,
              ignore_thre=ignore_thre))
 
     return mlist
@@ -115,14 +116,15 @@ class YOLOv3(nn.Module):
     The network returns loss values from three YOLO layers during training \
     and detection results during test.
     """
-    def __init__(self, ignore_thre=0.7):
+    def __init__(self, ignore_thre=0.7, n_classes=80):
         """
         Initialization of YOLOv3 class.
         Args:
             ignore_thre (float): used in YOLOLayer.
+            n_classes (int): number of classes
         """
         super(YOLOv3, self).__init__()
-        self.module_list = create_yolov3_modules(ignore_thre)
+        self.module_list = create_yolov3_modules(ignore_thre, n_classes=n_classes)
 
     def forward(self, x, targets=None):
         """
