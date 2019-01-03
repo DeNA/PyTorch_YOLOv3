@@ -96,7 +96,7 @@ class COCODataset(Dataset):
                                    random_placing=self.random_placing)
 
         if self.random_distort:
-            img = random_distort(img)
+            img = random_distort(img, self.hue, self.saturation, self.exposure)
 
         img = np.transpose(img / 255., (2, 0, 1))
 
