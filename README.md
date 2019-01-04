@@ -156,7 +156,7 @@ $ python train.py --cfg config/yolov3_eval.cfg --eval_interval 1 [--ckpt ckpt_pa
 - [x] Augmentation : Resizing
 - [x] Augmentation : Jitter
 - [x] Augmentation : Flip
-- [ ] Augmentation : Random Distortion
+- [x] Augmentation : Random Distortion
 - [ ] Add the YOLOv3 Tiny Model
 
 
