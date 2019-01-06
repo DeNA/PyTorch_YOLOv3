@@ -54,14 +54,17 @@ class resblock(nn.Module):
         return x
 
 
-def create_yolov3_modules(ignore_thre):
+def create_yolov3_modules(config_model, ignore_thre):
     """
     Build yolov3 layer modules.
     Args:
+        config_model (dict): model configuration.
+            See YOLOLayer class for details.
         ignore_thre (float): used in YOLOLayer.
     Returns:
         mlist (ModuleList): YOLOv3 module list.
     """
+
     # DarkNet53
     mlist = nn.ModuleList()
     mlist.append(add_conv(in_ch=3, out_ch=32, ksize=3, stride=1))
@@ -82,8 +85,7 @@ def create_yolov3_modules(ignore_thre):
     # 1st yolo branch
     mlist.append(add_conv(in_ch=512, out_ch=1024, ksize=3, stride=1))
     mlist.append(
-        YOLOLayer(anch_mask=[6, 7, 8], n_classes=80, stride=32, in_ch=1024,
-            ignore_thre=ignore_thre))
+         YOLOLayer(config_model, layer_no=0, in_ch=1024, ignore_thre=ignore_thre))
 
     mlist.append(add_conv(in_ch=512, out_ch=256, ksize=1, stride=1))
     mlist.append(nn.Upsample(scale_factor=2, mode='nearest'))
@@ -94,8 +96,7 @@ def create_yolov3_modules(ignore_thre):
     # 2nd yolo branch
     mlist.append(add_conv(in_ch=256, out_ch=512, ksize=3, stride=1))
     mlist.append(
-        YOLOLayer(anch_mask=[3, 4, 5], n_classes=80, stride=16, in_ch=512,
-             ignore_thre=ignore_thre))
+        YOLOLayer(config_model, layer_no=1, in_ch=512, ignore_thre=ignore_thre))
 
     mlist.append(add_conv(in_ch=256, out_ch=128, ksize=1, stride=1))
     mlist.append(nn.Upsample(scale_factor=2, mode='nearest'))
@@ -103,8 +104,7 @@ def create_yolov3_modules(ignore_thre):
     mlist.append(add_conv(in_ch=128, out_ch=256, ksize=3, stride=1))
     mlist.append(resblock(ch=256, nblocks=2, shortcut=False))
     mlist.append(
-        YOLOLayer(anch_mask=[0, 1, 2], n_classes=80, stride=8, in_ch=256,
-             ignore_thre=ignore_thre))
+         YOLOLayer(config_model, layer_no=2, in_ch=256, ignore_thre=ignore_thre))
 
     return mlist
 
@@ -115,14 +115,19 @@ class YOLOv3(nn.Module):
     The network returns loss values from three YOLO layers during training \
     and detection results during test.
     """
-    def __init__(self, ignore_thre=0.7):
+    def __init__(self, config_model, ignore_thre=0.7):
         """
         Initialization of YOLOv3 class.
         Args:
+            config_model (dict): used in YOLOLayer.
             ignore_thre (float): used in YOLOLayer.
         """
         super(YOLOv3, self).__init__()
-        self.module_list = create_yolov3_modules(ignore_thre)
+
+        if config_model['TYPE'] == 'YOLOv3':
+            self.module_list = create_yolov3_modules(config_model, ignore_thre)
+        else:
+            raise Exception('Model name {} is not available'.format(config_model['TYPE']))
 
     def forward(self, x, targets=None):
         """
