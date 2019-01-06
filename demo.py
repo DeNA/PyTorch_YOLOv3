@@ -33,7 +33,7 @@ def main():
 
     imgsize = cfg['TEST']['IMGSIZE']
     model = YOLOv3(cfg['MODEL'])
-    
+
     confthre = cfg['TEST']['CONFTHRE'] 
     nmsthre = cfg['TEST']['NMSTHRE']
 

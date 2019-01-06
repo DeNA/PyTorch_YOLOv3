@@ -25,13 +25,13 @@ class YOLOLayer(nn.Module):
         strides = [32, 16, 8] # fixed
         self.anchors = config_model['ANCHORS']
         self.anch_mask = config_model['ANCH_MASK'][layer_no]
-        self.n_anchors = len(anch_mask)
+        self.n_anchors = len(self.anch_mask)
         self.n_classes = config_model['N_CLASSES']
         self.ignore_thre = ignore_thre
         self.l2_loss = nn.MSELoss(size_average=False)
         self.bce_loss = nn.BCELoss(size_average=False)
         self.stride = strides[layer_no]
-        self.all_anchors_grid = [(w / stride, h / stride)
+        self.all_anchors_grid = [(w / self.stride, h / self.stride)
                                  for w, h in self.anchors]
         self.masked_anchors = [self.all_anchors_grid[i]
                                for i in self.anch_mask]
