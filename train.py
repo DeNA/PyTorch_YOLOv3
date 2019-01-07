@@ -1,6 +1,7 @@
 from __future__ import division
 
 from utils.utils import *
+from utils.lr_scheduler import MyLRScheduler
 from utils.cocoapi_evaluator import COCOAPIEvaluator
 from utils.parse_yolo_weights import parse_yolo_weights
 from models.yolov3 import *
@@ -126,11 +127,8 @@ def main():
     optimizer = optim.SGD(params, lr=base_lr, momentum=momentum,
                           dampening=0, weight_decay=decay * batch_size * subdivision)
 
-    tmp_lr = base_lr
-
-    def set_lr(tmp_lr):
-        for param_group in optimizer.param_groups:
-            param_group['lr'] = tmp_lr / batch_size / subdivision
+    lr_scheduler = MyLRScheduler(optimizer=optimizer, base_lr=lr, burn_in=burn_in, decay_steps=steps,
+                                 batch_size=batch_size, subdivision=subdivision)
 
     # start training loop
     for iter_i in range(iter_size):
@@ -143,16 +141,8 @@ def main():
                 tblogger.add_scalar('val/COCOAP50', ap50, iter_i)
                 tblogger.add_scalar('val/COCOAP50_95', ap50_95, iter_i)
 
-        # learning rate scheduling
-        if iter_i < burn_in:
-            tmp_lr = base_lr * pow(iter_i / burn_in, 4)
-            set_lr(tmp_lr)
-        elif iter_i == burn_in:
-            tmp_lr = base_lr
-            set_lr(tmp_lr)
-        elif iter_i in steps:
-            tmp_lr = tmp_lr * 0.1
-            set_lr(tmp_lr)
+        # Update learning rate
+        lr_scheduler.step()
 
         # subdivision loop
         optimizer.zero_grad()
@@ -173,7 +163,7 @@ def main():
             # logging
             print('[Iter %d/%d] [lr %f] '
                   '[Losses: xy %f, wh %f, conf %f, cls %f, total %f, imgsize %d]'
-                  % (iter_i, iter_size, tmp_lr,
+                  % (iter_i, iter_size, lr_scheduler.tmp_lr,
                      model.loss_dict['xy'], model.loss_dict['wh'],
                      model.loss_dict['conf'], model.loss_dict['cls'], 
                      model.loss_dict['l2'], imgsize),
