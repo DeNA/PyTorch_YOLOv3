@@ -75,7 +75,7 @@ def main():
     base_lr = lr
 
     # Initiate model
-    model = YOLOv3(ignore_thre=ignore_thre)
+    model = YOLOv3(cfg['MODEL'], ignore_thre=ignore_thre)
 
     if args.weights_path:
         print("loading darknet weights....", args.weights_path)

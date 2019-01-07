@@ -32,7 +32,8 @@ def main():
         cfg = yaml.load(f)
 
     imgsize = cfg['TEST']['IMGSIZE']
-    model = YOLOv3()
+    model = YOLOv3(cfg['MODEL'])
+
     confthre = cfg['TEST']['CONFTHRE'] 
     nmsthre = cfg['TEST']['NMSTHRE']
 
@@ -41,7 +42,8 @@ def main():
 
     img = cv2.imread(args.image)
     img_raw = img.copy()[:, :, ::-1].transpose((2, 0, 1))
-    img, info_img = preprocess(img, imgsize)  # info = (h, w, nh, nw, dx, dy)
+    img, info_img = preprocess(img, imgsize, jitter=0)  # info = (h, w, nh, nw, dx, dy)
+    img = np.transpose(img / 255., (2, 0, 1))
     img = torch.from_numpy(img).float().unsqueeze(0)
 
     if args.gpu >= 0:

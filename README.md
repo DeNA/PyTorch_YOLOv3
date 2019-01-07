@@ -112,6 +112,11 @@ We use the following format:
 MODEL:
   TYPE: YOLOv3
   BACKBONE: darknet53
+  ANCHORS: [[10, 13], [16, 30], [33, 23],
+            [30, 61], [62, 45], [59, 119],
+            [116, 90], [156, 198], [373, 326]] # the anchors used in the YOLO layers
+  ANCH_MASK: [[6, 7, 8], [3, 4, 5], [0, 1, 2]] # anchor filter for each YOLO layer
+  N_CLASSES: 80 # number of object classes
 TRAIN:
   LR: 0.001
   MOMENTUM: 0.9

@@ -8,37 +8,39 @@ class YOLOLayer(nn.Module):
     """
     detection layer corresponding to yolo_layer.c of darknet
     """
-    def __init__(self, anch_mask, n_classes, stride, in_ch=1024, ignore_thre=0.7):
+    def __init__(self, config_model, layer_no, in_ch, ignore_thre=0.7):
         """
         Args:
-            anch_mask (list of int): index indicating the anchors to be used in this layer.
-            n_classes (int): number of classes
-            stride (int): the corresponding pixel number of the input image for \
-                one pixel in the feature map at the scale.
+            config_model (dict) : model configuration.
+                ANCHORS (list of tuples) :
+                ANCH_MASK:  (list of int list): index indicating the anchors to be
+                    used in YOLO layers. One of the mask group is picked from the list.
+                N_CLASSES (int): number of classes
+            layer_no (int): YOLO layer number - one from (0, 1, 2).
             in_ch (int): number of input channels.
             ignore_thre (float): threshold of IoU above which objectness training is ignored.
         """
+
         super(YOLOLayer, self).__init__()
-        self.conv = nn.Conv2d(in_channels=in_ch,
-                              out_channels=255, kernel_size=1, stride=1, padding=0)
-        self.anchors = [
-            (10, 13), (16, 30), (33, 23),
-            (30, 61), (62, 45), (59, 119),
-            (116, 90), (156, 198), (373, 326)]
-        self.anch_mask = anch_mask
-        self.n_anchors = 3
-        self.n_classes = n_classes
+        strides = [32, 16, 8] # fixed
+        self.anchors = config_model['ANCHORS']
+        self.anch_mask = config_model['ANCH_MASK'][layer_no]
+        self.n_anchors = len(self.anch_mask)
+        self.n_classes = config_model['N_CLASSES']
         self.ignore_thre = ignore_thre
         self.l2_loss = nn.MSELoss(size_average=False)
         self.bce_loss = nn.BCELoss(size_average=False)
-        self.stride = stride
-        self.all_anchors_grid = [(w / stride, h / stride)
+        self.stride = strides[layer_no]
+        self.all_anchors_grid = [(w / self.stride, h / self.stride)
                                  for w, h in self.anchors]
         self.masked_anchors = [self.all_anchors_grid[i]
                                for i in self.anch_mask]
         self.ref_anchors = np.zeros((len(self.all_anchors_grid), 4))
         self.ref_anchors[:, 2:] = np.array(self.all_anchors_grid)
         self.ref_anchors = torch.FloatTensor(self.ref_anchors)
+        self.conv = nn.Conv2d(in_channels=in_ch,
+                              out_channels=self.n_anchors * (self.n_classes + 5),
+                              kernel_size=1, stride=1, padding=0)
 
     def forward(self, xin, labels=None):
         """
@@ -178,11 +180,11 @@ class YOLOLayer(nn.Module):
         # loss calculation
 
         output[..., 4] *= obj_mask
-        output[..., np.r_[0:4, 5:85]] *= tgt_mask
+        output[..., np.r_[0:4, 5:n_ch]] *= tgt_mask
         output[..., 2:4] *= tgt_scale
 
         target[..., 4] *= obj_mask
-        target[..., np.r_[0:4, 5:85]] *= tgt_mask
+        target[..., np.r_[0:4, 5:n_ch]] *= tgt_mask
         target[..., 2:4] *= tgt_scale
 
         bceloss = nn.BCELoss(weight=tgt_scale*tgt_scale,
