@@ -175,7 +175,7 @@ class YOLOLayer(nn.Module):
                     target[b, a, j, i, 5 + labels[b, ti,
                                                   0].to(torch.int16).numpy()] = 1
                     tgt_scale[b, a, j, i, :] = torch.sqrt(
-                        2 - truth_x_all[b, ti] * truth_y_all[b, ti] / fsize / fsize)
+                        2 - truth_w_all[b, ti] * truth_h_all[b, ti] / fsize / fsize)
 
         # loss calculation
 
