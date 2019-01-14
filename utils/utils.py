@@ -311,7 +311,6 @@ def random_distort(img, hue, saturation, exposure):
     dsat = rand_scale(saturation)
     dexp = rand_scale(exposure)
 
-    img = (img * 255).clip(0, 255).astype(np.uint8)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
     img = np.asarray(img, dtype=np.float32) / 255.
     img[:, :, 1] *= dsat
@@ -323,6 +322,7 @@ def random_distort(img, hue, saturation, exposure):
     else:
         H[H < 0.0] += 1.0
 
+    img = (img * 255).clip(0, 255).astype(np.uint8)
     img = cv2.cvtColor(img, cv2.COLOR_HSV2RGB)
     img = np.asarray(img, dtype=np.float32)
 
