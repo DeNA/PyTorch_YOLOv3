@@ -189,7 +189,7 @@ def main():
                 dataset.img_size = imgsize
                 dataloader = torch.utils.data.DataLoader(
                     dataset, batch_size=batch_size, shuffle=True, num_workers=args.n_cpu)
-                dataiterator = iter(dataiterator)
+                dataiterator = iter(dataloader)
 
         # save checkpoint
         if iter_i > 0 and (iter_i % args.checkpoint_interval == 0):
