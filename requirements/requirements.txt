@@ -3,6 +3,6 @@ numpy==1.15.2
 matplotlib==3.0.2
 opencv_python==3.4.4.19
 tensorboardX==1.4
-PyYAML==3.13
+PyYAML>=4.2b1
 pycocotools==2.0.0
 
