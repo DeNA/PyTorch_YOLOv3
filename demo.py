@@ -65,6 +65,10 @@ def main():
         outputs = model(img)
         outputs = postprocess(outputs, 80, confthre, nmsthre)
 
+    if outputs[0] is None:
+        print("No Objects Deteted!!")
+        return
+
     coco_class_names, coco_class_ids, coco_class_colors = get_coco_label_names()
 
     bboxes = list()
