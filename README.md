@@ -4,9 +4,10 @@ Pytorch implementation of YOLOv3
 <p align="left"><img src="data/innsbruck_result.png" height="160"\>  <img src="data/mountain_result.png" height="160"\></p>
 
 ## What's New
+- 19/02/12 verified inference COCO AP [IoU=0.50:0.95] = 0.297 with val2017, 416x416, batchsize = 8 and w/o random distortion
 - 18/11/27 [COCO AP results of darknet (training) are reproduced with the same training conditions](#performance)
-- 18/11/20 verified inference COCO AP[IoU=0.50:0.95] = 0.302 (paper: 0.310), val5k, 416x416  
-- 18/11/20 verified inference COCO AP[IoU=0.50]  = 0.544 (paper: 0.553), val5k, 416x416
+- 18/11/20 verified inference COCO AP [IoU=0.50:0.95] = 0.302 (paper: 0.310), val5k, 416x416  
+- 18/11/20 verified inference COCO AP [IoU=0.50]  = 0.544 (paper: 0.553), val5k, 416x416
 
 ## Performance
 
@@ -14,9 +15,12 @@ Pytorch implementation of YOLOv3
 <tr><th align="left" bgcolor=#f8f8f8> </th>     <td bgcolor=white> Original (darknet) </td><td bgcolor=white> Ours (pytorch) </td></tr>
 <tr><th align="left" bgcolor=#f8f8f8> COCO AP[IoU=0.50:0.95], inference</th> <td bgcolor=white> 0.310 </td><td bgcolor=white> 0.302 </td></tr>
 <tr><th align="left" bgcolor=#f8f8f8> COCO AP[IoU=0.50],      inference</th> <td bgcolor=white> 0.553 </td><td bgcolor=white> 0.544 </td></tr>
-<tr><th align="left" bgcolor=#f8f8f8> COCO AP[IoU=0.50:0.95], training</th> <td bgcolor=white> 0.310 </td><td bgcolor=white> to be updated</td></tr>
-<tr><th align="left" bgcolor=#f8f8f8> COCO AP[IoU=0.50],      training</th> <td bgcolor=white> 0.553 </td><td bgcolor=white> to be updated </td></tr>
+<tr><th align="left" bgcolor=#f8f8f8> COCO AP[IoU=0.50:0.95], training</th> <td bgcolor=white> 0.310 </td><td bgcolor=white> 0.297(*) </td></tr>
+<tr><th align="left" bgcolor=#f8f8f8> COCO AP[IoU=0.50],      training</th> <td bgcolor=white> 0.553 </td><td bgcolor=white> 0.506(*) </td></tr>
 </table></tbody>
+
+(*) results with batchsize = 8 and w/o random distortion  
+Also, the results with batchsize = 4 and with random distortion will be updated soon.
 
 We have verified that COCO val results of darknet are reproduced in the condition where only random resizing is used:
 <p align="left"><img src="data/val_comparison.png" height="280"\>
