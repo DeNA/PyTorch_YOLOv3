@@ -82,7 +82,8 @@ def main():
         parse_yolo_weights(model, args.weights_path)
     elif args.checkpoint:
         print("loading pytorch ckpt...", args.checkpoint)
-        model.load_state_dict(torch.load(args.checkpoint))
+        state = torch.load(args.checkpoint)
+        model.load_state_dict(state['model_state_dict'])
 
     if cuda:
         print("using cuda") 
@@ -126,6 +127,14 @@ def main():
     optimizer = optim.SGD(params, lr=base_lr, momentum=momentum,
                           dampening=0, weight_decay=decay * batch_size * subdivision)
 
+    iter_state = 0
+
+    if args.checkpoint:
+        optimizer.load_state_dict(state['optimizer_state_dict'])
+        iter_state = state['iter']
+
+    # TODO: replace the following scheduler with the PyTorch's official one
+
     tmp_lr = base_lr
 
     def set_lr(tmp_lr):
@@ -133,7 +142,7 @@ def main():
             param_group['lr'] = tmp_lr / batch_size / subdivision
 
     # start training loop
-    for iter_i in range(iter_size):
+    for iter_i in range(iter_state, iter_size + 1):
 
         # COCO evaluation
         if iter_i % args.eval_interval == 0 and iter_i > 0:
@@ -193,8 +202,11 @@ def main():
 
         # save checkpoint
         if iter_i > 0 and (iter_i % args.checkpoint_interval == 0):
-            torch.save(model.state_dict(), os.path.join(args.checkpoint_dir,
-                       "snapshot.ckpt"))
+            torch.save({'iter': iter_i,
+                        'model_state_dict': model.state_dict(),
+                        'optimizer_state_dict': optimizer.state_dict(),
+                        },
+                        os.path.join(args.checkpoint_dir, "snapshot"+str(iter_i)+".ckpt"))
     if args.tfboard:
         tblogger.close()
 
