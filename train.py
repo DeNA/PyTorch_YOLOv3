@@ -83,7 +83,10 @@ def main():
     elif args.checkpoint:
         print("loading pytorch ckpt...", args.checkpoint)
         state = torch.load(args.checkpoint)
-        model.load_state_dict(state['model_state_dict'])
+        if 'model_state_dict' in state.keys():
+            model.load_state_dict(state['model_state_dict'])
+        else:
+            model.load_state_dict(state)
 
     if cuda:
         print("using cuda") 
@@ -130,8 +133,9 @@ def main():
     iter_state = 0
 
     if args.checkpoint:
-        optimizer.load_state_dict(state['optimizer_state_dict'])
-        iter_state = state['iter']
+        if 'optimizer_state_dict' in state.keys():
+            optimizer.load_state_dict(state['optimizer_state_dict'])
+            iter_state = state['iter']
 
     # TODO: replace the following scheduler with the PyTorch's official one
 
