@@ -146,7 +146,7 @@ def main():
             param_group['lr'] = tmp_lr / batch_size / subdivision
 
     # start training loop
-    for iter_i in range(iter_state, iter_size + 1):
+    for iter_i in range(iter_state + 1, iter_size + 1):
 
         # COCO evaluation
         if iter_i % args.eval_interval == 0 and iter_i > 0:
