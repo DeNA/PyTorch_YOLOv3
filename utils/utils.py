@@ -170,10 +170,10 @@ def label2yolobox(labels, info_img, maxsize, lrflip):
     Transform coco labels to yolo box labels
     Args:
         labels (numpy.ndarray): label data whose shape is :math:`(N, 5)`.
-            Each label consists of [class, x1, y1, x2, y2] where \
+            Each label consists of [class, x, y, w, h] where \
                 class (float): class index.
-                x1, y1, x2, y2 (float) : coordinates of \
-                    left-top and right-bottom points of bounding boxes.
+                x, y, w, h (float) : coordinates of \
+                    left-top points, width, and height of a bounding box.
                     Values range from 0 to width or height of the image.
         info_img : tuple of h, w, nh, nw, dx, dy.
             h, w (int): original shape of the image
