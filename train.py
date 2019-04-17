@@ -74,7 +74,7 @@ def main():
     # Learning rate setup
     def burnin_schedule(i):
         if i < burn_in:
-            factor = pow(i / steps[0], 4)
+            factor = pow(i / burn_in, 4)
         elif i < steps[0]:
             factor = 1.0
         elif i < steps[1]:
@@ -177,9 +177,10 @@ def main():
 
         if iter_i % 10 == 0:
             # logging
+            current_lr = scheduler.get_lr()[0] * batch_size * subdivision
             print('[Iter %d/%d] [lr %f] '
                   '[Losses: xy %f, wh %f, conf %f, cls %f, total %f, imgsize %d]'
-                  % (iter_i, iter_size, scheduler.get_lr()[0],
+                  % (iter_i, iter_size, current_lr,
                      model.loss_dict['xy'], model.loss_dict['wh'],
                      model.loss_dict['conf'], model.loss_dict['cls'], 
                      model.loss_dict['l2'], imgsize),
