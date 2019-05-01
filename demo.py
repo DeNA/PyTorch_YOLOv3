@@ -52,12 +52,18 @@ def main():
     else:
         img = Variable(img.type(torch.FloatTensor))
 
+    assert args.weights_path or args.ckpt, 'One of --weights_path and --ckpt must be specified'
+
     if args.weights_path:
         print("loading yolo weights %s" % (args.weights_path))
         parse_yolo_weights(model, args.weights_path)
-    else:
+    elif args.ckpt:
         print("loading checkpoint %s" % (args.ckpt))
-        model.load_state_dict(torch.load(args.ckpt))
+        state = torch.load(args.ckpt)
+        if 'model_state_dict' in state.keys():
+            model.load_state_dict(state['model_state_dict'])
+        else:
+            model.load_state_dict(state)
 
     model.eval()
 
