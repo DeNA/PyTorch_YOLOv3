@@ -4,7 +4,7 @@ Pytorch implementation of YOLOv3
 <p align="left"><img src="data/innsbruck_result.png" height="160"\>  <img src="data/mountain_result.png" height="160"\></p>
 
 ## What's New
-- **19/05/03 We have verified that our repo exactly reproduces darknet's training using the default configuration, with COCO AP ~= 0.275 on train / val2017.**
+- **19/05/05 We have verified that our repo exactly reproduces darknet's training using the default configuration, with COCO AP ~= 0.277 on train / val2017.**
 - 19/02/12 verified inference COCO AP [IoU=0.50:0.95] = 0.297 with val2017, 416x416, batchsize = 8 and w/o random distortion
 - 18/11/27 [COCO AP results of darknet (training) are reproduced with the same training conditions](#performance)
 - 18/11/20 verified inference COCO AP [IoU=0.50:0.95] = 0.302 (paper: 0.310), val5k, 416x416  
@@ -20,16 +20,18 @@ Pytorch implementation of YOLOv3
 </table></tbody>
 
 #### Training
-The models are trained for 500k iterations on the COCO 2017 train dataset using darknet repo and our repo,
-and evaluated on the COCO 2017 val dataset using our repo.
-The AP of the pretrained weights cannot be reproduced by the **darknet repo itself**.
-However our repo reproduces the results of the darknet repo exactly.
+The benchmark results below have been obtained by training models for 500k iterations on the COCO 2017 train dataset using darknet repo and our repo.
+The models have been evaluated on the COCO 2017 val dataset using our repo.
+- Our repo reproduces the results of the darknet repo exactly.  
+- The AP of the pretrained weights (yolov3.weights) cannot be reproduced by the default setting of the darknet repo.
+
 <table><tbody><tr><th align="left" bgcolor=#f8f8f8> </th> <td bgcolor=white> darknet weights </td><td bgcolor=white> darknet repo </td><td bgcolor=white> Ours (pytorch) </td><td bgcolor=white> Ours (pytorch) </td></tr>
 <tr><th align="left" bgcolor=#f8f8f8> batchsize </th> <td bgcolor=white> ?? </td><td bgcolor=white> 4 </td><td bgcolor=white> 4 </td> <td bgcolor=white> 8 </td> </tr>
-<tr><th align="left" bgcolor=#f8f8f8> speed [iter/min] </th> <td bgcolor=white> ?? </td><td bgcolor=white> <b>19.2</b> </td><td bgcolor=white> <b>20.0</b> </td> <td bgcolor=white> 21.1 </td> </tr>
+<tr><th align="left" bgcolor=#f8f8f8> speed [iter/min](*) </th> <td bgcolor=white> ?? </td><td bgcolor=white> <b>19.2</b> </td><td bgcolor=white> <b>19.4</b> </td> <td bgcolor=white> 21.0 </td> </tr>
 <tr><th align="left" bgcolor=#f8f8f8> COCO AP[IoU=0.50:0.95], training</th> <td bgcolor=white> 0.302 </td><td bgcolor=white> <b>0.278</b> </td> <td bgcolor=white> <b>0.277</b> </td> <td bgcolor=white> 0.292 </td> </tr>
 <tr><th align="left" bgcolor=#f8f8f8> COCO AP[IoU=0.50],      training</th> <td bgcolor=white> 0.544 </td><td bgcolor=white> <b>0.476</b> </td> <td bgcolor=white> <b>0.478</b> </td> <td bgcolor=white> 0.500 </td> </tr>
 </table></tbody>
+(*) measured on Tesla V100
 
 <p align="left"><img src="data/val2017_comparison.png" height="280"\>
 
