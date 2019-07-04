@@ -20,7 +20,7 @@ ENV PYENV_ROOT /home/docker/.pyenv
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
 
-ENV PYTHON_VERSION 3.6.0
+ENV PYTHON_VERSION 3.6.8
 RUN pyenv install ${PYTHON_VERSION} && pyenv global ${PYTHON_VERSION}
 
 RUN pip install -U pip setuptools
