@@ -38,11 +38,11 @@ The models have been evaluated on the COCO 2017 val dataset using our repo.
 ## Installation
 #### Requirements
 
-- Python 3.6+
+- Python 3.6.3+
 - Numpy (verified as operable: 1.15.2)
 - OpenCV
 - Matplotlib
-- Pytorch (verified as operable: v0.4.0, v1.0.0)
+- Pytorch 1.0.0+ (verified as operable: v0.4.0, v1.0.0)
 - Cython (verified as operable: v0.29.1)
 - [pycocotools](https://pypi.org/project/pycocotools/) (verified as operable: v2.0.0) 
 - Cuda (verified as operable: v9.0)

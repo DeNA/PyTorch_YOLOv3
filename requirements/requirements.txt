@@ -1,4 +1,4 @@
-torch==0.4.0
+torch==1.0.0
 numpy==1.15.2
 matplotlib==3.0.2
 opencv_python==3.4.4.19
