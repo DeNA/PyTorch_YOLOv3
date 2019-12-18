@@ -94,13 +94,14 @@ def postprocess(prediction, num_classes, conf_thre=0.7, nms_thre=0.45):
         # If none are remaining => process next image
         if not image_pred.size(0):
             continue
-        # Get score and class with highest confidence
-        class_conf, class_pred = torch.max(
-            image_pred[:, 5:5 + num_classes], 1,  keepdim=True)
-
+        # Get detections with higher confidence scores than the threshold
+        ind = (image_pred[:, 5:] * image_pred[:, 4][:, None] >= conf_thre).nonzero()
         # Detections ordered as (x1, y1, x2, y2, obj_conf, class_conf, class_pred)
-        detections = torch.cat(
-            (image_pred[:, :5], class_conf.float(), class_pred.float()), 1)
+        detections = torch.cat((
+                image_pred[ind[:, 0], :5],
+                image_pred[ind[:, 0], 5 + ind[:, 1]].unsqueeze(1),
+                ind[:, 1].float().unsqueeze(1)
+                ), 1)
         # Iterate through all predicted classes
         unique_labels = detections[:, -1].cpu().unique()
         if prediction.is_cuda:
